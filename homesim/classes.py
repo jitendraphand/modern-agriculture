@@ -1,0 +1,28 @@
+"""Semantic classes for indoor house scenes."""
+
+HOUSE_CLASSES = {
+    0: ("background", (0, 0, 0), "sky / unmodelled"),
+    1: ("floor", (128, 64, 128), "floors of every room"),
+    2: ("wall", (102, 102, 156), "walls, skirting"),
+    3: ("ceiling", (190, 153, 153), "ceilings"),
+    4: ("door", (180, 120, 40), "door leaves and frames"),
+    5: ("window", (70, 130, 180), "window glass and frames"),
+    6: ("rug", (220, 180, 200), "rugs and mats"),
+    7: ("seating", (220, 20, 60), "sofas, armchairs, chairs, stools"),
+    8: ("table", (255, 128, 0), "tables, desks, nightstand tops"),
+    9: ("bed", (0, 0, 142), "beds and mattresses"),
+    10: ("storage", (119, 11, 32), "cabinets, shelves, wardrobes, drawers"),
+    11: ("appliance", (0, 80, 100), "fridge, stove, washing machine, TV, monitor"),
+    12: ("counter", (152, 251, 152), "kitchen counters and sinks"),
+    13: ("sanitary", (0, 220, 220), "toilet, bathtub, shower tray, basin"),
+    14: ("lamp", (250, 250, 0), "lamps and ceiling lights"),
+    15: ("plant", (107, 142, 35), "potted plants"),
+    16: ("small_object", (255, 0, 255), "graspable clutter: cups, bottles, books, toys, shoes, ..."),
+    17: ("textile", (255, 160, 122), "pillows, blankets, curtains, clothes"),
+    18: ("person", (255, 0, 0), "people"),
+    19: ("pet", (165, 42, 42), "dogs and cats"),
+    20: ("box", (210, 180, 140), "cardboard boxes"),
+    21: ("decoration", (0, 0, 230), "pictures, mirrors, clocks"),
+    22: ("outdoor", (60, 100, 60), "ground, trees outside"),
+    23: ("stairs", (100, 60, 20), "stairs and steps (cliff hazard)"),
+}

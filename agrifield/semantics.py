@@ -22,6 +22,16 @@ CLASSES = {
 }
 
 NAME_TO_ID = {v[0]: k for k, v in CLASSES.items()}
+AGRI_CLASSES = dict(CLASSES)
+
+
+def set_classes(table):
+    """Switch the active class table in place (used by other scene families,
+    e.g. ``homesim``).  Every module keeps referencing the same dicts."""
+    CLASSES.clear()
+    CLASSES.update(table)
+    NAME_TO_ID.clear()
+    NAME_TO_ID.update({v[0]: k for k, v in CLASSES.items()})
 
 
 def class_id(name):

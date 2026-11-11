@@ -20,6 +20,11 @@ from . import semantics
 from .pngio import write_png
 
 
+# instance attributes copied into per-frame objects and COCO annotations
+EXTRA_KEYS = ("crop", "stage", "species", "row_id", "pose", "room", "room_type", "state", "open_angle_deg",
+              "support", "on_floor", "fallen")
+
+
 def rle_encode(mask):
     """COCO uncompressed RLE (column-major)."""
     flat = np.asarray(mask, dtype=np.uint8).flatten(order="F")
@@ -101,7 +106,7 @@ class FrameWriter:
             bbox = [x0, y0, x1 - x0 + 1, y1 - y0 + 1]
             o = dict(instance_id=iid, category=rec["category"], label=rec.get("label"), bbox_xywh=bbox,
                      area_px=int(cnt), truncated=bool(x0 == 0 or y0 == 0 or x1 == W - 1 or y1 == H - 1))
-            for k in ("crop", "stage", "species", "row_id", "pose"):
+            for k in EXTRA_KEYS:
                 if k in rec:
                     o[k] = rec[k]
             pc = cameras.project(cam_obj, scene, [rec["position"]])[0]
@@ -112,7 +117,7 @@ class FrameWriter:
             self.coco["annotations"].append(dict(
                 id=self.ann_id, image_id=image_id, category_id=self._cat(rec), bbox=bbox, area=int(cnt),
                 iscrowd=0, segmentation=rle_encode(m), instance_id=iid,
-                attributes={k: rec[k] for k in ("stage", "crop", "species", "row_id") if k in rec}))
+                attributes={k: rec[k] for k in EXTRA_KEYS if k in rec}))
             self.ann_id += 1
 
         # fruit / harvestable organ key-points with visibility test

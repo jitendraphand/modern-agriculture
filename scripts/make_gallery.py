@@ -94,13 +94,14 @@ def main():
         cams = [c["name"] for c in meta["cameras"]]
         frames = {c: "%s_p000_%s" % (name, c) for c in cams}
         rgb = {c: glob.glob(os.path.join(d, "rgb", frames[c] + ".*")) for c in cams}
-        main_cams = [c for c in cams if c != "overview"][:2]
+        ovname = "overview" if "overview" in cams else ("topdown" if "topdown" in cams else None)
+        main_cams = [c for c in cams if c != ovname][:2]
         if not main_cams or not rgb[main_cams[0]]:
             continue
         top = [resize(load(rgb[c][0]), tw, th) for c in main_cams]
         ov = None
-        if "overview" in cams and rgb["overview"]:
-            ov = resize(load(rgb["overview"][0]), tw, th)
+        if ovname and rgb[ovname]:
+            ov = resize(load(rgb[ovname][0]), tw, th)
             top.append(ov)
             overviews.append((name, ov))
         while len(top) < 3:

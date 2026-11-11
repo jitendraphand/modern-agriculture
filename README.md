@@ -18,6 +18,11 @@ through it, and renders camera images together with pixel-exact ground truth:
 
 ![contact sheet](docs/gallery/contact_sheet.jpg)
 
+> **Also on this branch: [`homesim`](HOUSES.md)**, 20 procedural indoor house scenarios
+> (furnished multi-room homes with clutter, people, pets, doors and day/night lighting) for home
+> robots, using the same renderer and ground-truth format.
+> `python scripts/generate_houses.py --list`
+
 ## 48 scenarios, 16 crops
 
 `python scripts/generate.py --list` prints the catalog (`agrifield/scenarios.py`).

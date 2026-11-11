@@ -144,6 +144,7 @@ class FieldScene:
     def build(self):
         t0 = time.time()
         bpy.ops.wm.read_factory_settings(use_empty=True)
+        semantics.set_classes(semantics.AGRI_CLASSES)
         self.scene = bpy.context.scene
         self.scene.name = self.sc["name"]
         self._all_specs = {}
