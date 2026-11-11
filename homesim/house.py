@@ -225,6 +225,9 @@ class HouseScene:
         self.add("door_%d" % len(self.records), leaf, hinge, yaw, "door", coll="HM_Structure",
                  record=dict(category="door", label="front_door" if op["kind"] == "front_door" else "door",
                              open_angle_deg=round(angle, 1), state="open" if angle > 45 else ("ajar" if angle > 0 else "closed")))
+        ex, ey = hinge[0] + lw * math.cos(yaw), hinge[1] + lw * math.sin(yaw)
+        self.occ.append((min(hinge[0], ex) - 0.03, min(hinge[1], ey) - 0.03, max(hinge[0], ex) + 0.03,
+                         max(hinge[1], ey) + 0.03, "door_leaf"))
         if angle > 0:
             # keep the swing area clear of furniture
             s0 = op["s0"]

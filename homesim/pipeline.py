@@ -40,7 +40,7 @@ def free_space(hs, clearance=0.3):
 
 
 def robot_poses(hs, n, rng):
-    free, info, _ = free_space(hs)
+    free, info, occ = free_space(hs)
     res, (ox, oy) = info["resolution"], info["origin"]
     rooms = sorted(hs.plan["rooms"], key=lambda r: -r["rect"].area)
     poses = []
@@ -55,10 +55,21 @@ def robot_poses(hs, n, rng):
             continue
         idx = rng.choice(list(np.flatnonzero(m)))
         x, y = float(wx[idx]), float(wy[idx])
-        # look at the farthest part of the room so the view is not a wall
-        tx, ty = (R.x1 if x < R.cx else R.x0), (R.y1 if y < R.cy else R.y0)
-        tx, ty = 0.5 * (tx + R.cx), 0.5 * (ty + R.cy)
-        yaw = math.atan2(-(tx - x), ty - y) + math.radians(rng.uniform(-25, 25))
+        # face the most open direction (ray-cast the occupancy grid), with some randomness
+        best = []
+        for k2 in range(24):
+            a = 2 * math.pi * k2 / 24
+            dx, dy = -math.sin(a), math.cos(a)
+            dist = 0.0
+            while dist < 8.0:
+                dist += res
+                gx = int((x + dx * dist - ox) / res)
+                gy = int((y + dy * dist - oy) / res)
+                if not (0 <= gy < occ.shape[0] and 0 <= gx < occ.shape[1]) or occ[gy, gx] != 0:
+                    break
+            best.append((dist, a))
+        best.sort(reverse=True)
+        yaw = rng.choice(best[:4])[1] + math.radians(rng.uniform(-12, 12))
         poses.append(dict(x=x, y=y, yaw=yaw, room=room["name"]))
     return poses
 
@@ -80,7 +91,9 @@ def place(spec, pose, hs, rng):
         z = half / math.tan(math.radians(spec["hfov"]) / 2) + hs.H
         return Vector((hs.W / 2, hs.D / 2, z)), cameras.look_rotation(0.0, -90.0)
     if kind == "tabletop":
-        cands = sorted(hs.supports, key=lambda s: -len(s["items"]))[:4]
+        low = [s for s in hs.supports if s["z"] < 1.2]
+        pool = [s for s in (low or hs.supports) if s["items"]] or low or hs.supports
+        cands = sorted(pool, key=lambda s: -len(s["items"]))[:4]
         if not cands:
             return None
         sup = rng.choice(cands)
